@@ -1,8 +1,46 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 body {
   display: flex;
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
+  background-color: #112f3f;
+}
+.data-section {
+  border-radius: 20px;
+  background-color: #eae2b7;
+  box-shadow: 5px 5px 10px black;
+  height: 165px;
+  padding: 10px;
+  margin: 20px;
+  /* color: #112f3f; */
+}
+.title {
+  color: #eae2b7;
+}
+.section-title {
+  text-decoration: underline;
+}
+.hospital-metrics,
+.icu-metrics {
+  height: 200px;
+}
+h1 {
+  font-size: 4em;
+}
+.search-input{
+  background-color: #eae2b7;
+}
+.search-button{
+  background-color: #D62828;
+  color: #eae2b7;
+  border-radius: 40px;
+  width: 5em;
+  height: 2em;
 }
 main {
   display: flex;
@@ -10,8 +48,21 @@ main {
   justify-content: center;
   align-items: center;
 }
+form {
+  margin: 1rem;
+}
+.location {
+  margin: 1rem;
+  color: #eae2b7;
+}
+.date-updated {
+  color: #eae2b7;
+}
 p {
   text-align: center;
+}
+.data-item {
+  margin: 1rem;
 }
 .date-updated {
   font-size: 14px;

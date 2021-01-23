@@ -3,41 +3,52 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>U.S. Covid-19 Data App</title>
+    <title>U.S. COVID-19 Data App</title>
     <link rel="stylesheet" href="style.css" />
     <script src="app.js" defer></script>
   </head>
   <body>
     <header class="title-area">
       <h1 class="title">U.S. Covid-19 Data</h1>
-      <p class="date-updated"></p>
     </header>
     <main>
       <h2 class="location"></h2>
       <form action="submit" class="search">
-        <input type="text" />
-        <button type="submit">Search</button>
+        <input type="text" class="search-input" />
+        <button type="submit" class="search-button">Search</button>
       </form>
+      <p class="date-updated"></p>
       <div class="data">
-        <h3 class="general-info">General Info-</h3>
-        <p class="population"></p>
-        <p class="total-cases"></p>
-        <p class="total-deaths"></p>
-        <h3 class="infection-metrics">Infection Metrics-</h3>
-        <p class="new-cases"></p>
-        <p class="infection-rate"></p>
-        <p class="case-density"></p>
-        <h3 class="hospital-metrics">Hospital Metrics-</h3>
-        <p class="hospital-capacity"></p>
-        <p class="hospital-covid-usage"></p>
-        <p class="hospital-total-usage"></p>
-        <p class="hospital-remaining"></p>
-        <h3 class="icu-metrics">ICU Metrics-</h3>
-        <p class="icu-capacity"></p>
-        <p class="icu-covid-usage"></p>
-        <p class="icu-total-usage"></p>
-        <p class="icu-remaining"></p>
+        <section class="general-info data-section">
+          <h3 class="section-title">General Info-</h3>
+          <p class="population data-item"></p>
+          <p class="total-cases data-item"></p>
+          <p class="total-deaths data-item"></p>
+        </section>
+        <section class="infection-metrics data-section">
+          <h3 class="section-title">Infection Metrics-</h3>
+          <p class="new-cases data-item"></p>
+          <p class="infection-rate data-item"></p>
+          <p class="case-density data-item"></p>
+        </section>
+        <section class="hospital-metrics data-section">
+          <h3 class="section-title">Hospital Metrics-</h3>
+          <p class="hospital-capacity data-item"></p>
+          <p class="hospital-covid-usage data-item"></p>
+          <p class="hospital-total-usage data-item"></p>
+          <p class="hospital-remaining data-item"></p>
+        </section>
+        <section class="icu-metrics data-section">
+          <h3 class="section-title">ICU Metrics-</h3>
+          <p class="icu-capacity data-item"></p>
+          <p class="icu-covid-usage data-item"></p>
+          <p class="icu-total-usage data-item"></p>
+          <p class="icu-remaining data-item"></p>
+        </section>
       </div>
     </main>
+    <a href="https://icons8.com/icon/enn64pGPtmU9/search"
+      >Search icon by Icons8</a
+    >
   </body>
 </html>

@@ -30,6 +30,7 @@ window.addEventListener("load", () => {
   let formatDate = (date) => {
     let dateString = date;
     let formattedDate = new Date(dateString);
+    console.log(formattedDate.toLocaleDateString);
     return (
       formattedDate.getMonth() +
       1 +
@@ -60,6 +61,7 @@ window.addEventListener("load", () => {
       let { infectionRate, caseDensity } = data.metrics;
       let location = county + ", " + state + ", " + country;
       //inject extracted data into markup
+      console.log(lastUpdatedDate);
       dateUpdatedEl.innerHTML = "Date Update: " + formatDate(lastUpdatedDate);
       locationEl.innerHTML = location;
       populationEl.innerHTML = "Population: " + population.toLocaleString();
