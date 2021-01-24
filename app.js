@@ -17,6 +17,8 @@ window.addEventListener("load", () => {
   let icuCovidUsageEl = document.querySelector(".icu-covid-usage");
   let icuTotalUsageEl = document.querySelector(".icu-total-usage");
   let icuRemainingEl = document.querySelector(".icu-remaining");
+  let searchInput = document.querySelector(".search-input");
+  let searchButton = document.querySelector(".search-button");
   //variables for API request
   const apiKey = "1e93c10c57714916ac56744d86a5e208";
   const api = `https://api.covidactnow.org/v2/county/06097.json?apiKey=${apiKey}`;
@@ -30,7 +32,7 @@ window.addEventListener("load", () => {
   let formatDate = (date) => {
     let dateString = date;
     let formattedDate = new Date(dateString);
-    console.log(formattedDate.toLocaleDateString);
+    formattedDate.setDate(formattedDate.getDate() + 1);
     return (
       formattedDate.getMonth() +
       1 +
@@ -61,7 +63,6 @@ window.addEventListener("load", () => {
       let { infectionRate, caseDensity } = data.metrics;
       let location = county + ", " + state + ", " + country;
       //inject extracted data into markup
-      console.log(lastUpdatedDate);
       dateUpdatedEl.innerHTML = "Date Update: " + formatDate(lastUpdatedDate);
       locationEl.innerHTML = location;
       populationEl.innerHTML = "Population: " + population.toLocaleString();
@@ -94,5 +95,14 @@ window.addEventListener("load", () => {
     })
     .then((data) => {
       console.log(data);
+      for(i = 0; i< data.length; i++){
+        console.log(data[i].county);
+      }
     });
+
+  searchButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    console.log(searchInput.value);
+    searchInput.value = "";
+  });
 });
