@@ -19,6 +19,7 @@ window.addEventListener("load", () => {
   let icuRemainingEl = document.querySelector(".icu-remaining");
   let searchInput = document.querySelector(".search-input");
   let searchButton = document.querySelector(".search-button");
+  let countyMap = new Map();
   //variables for API request
   const apiKey = "1e93c10c57714916ac56744d86a5e208";
   const api = `https://api.covidactnow.org/v2/county/06097.json?apiKey=${apiKey}`;
@@ -43,6 +44,9 @@ window.addEventListener("load", () => {
     );
   };
   //API request
+  let updateData = () =>{
+
+  }
   fetch(api)
     .then((response) => {
       return response.json();
@@ -95,9 +99,12 @@ window.addEventListener("load", () => {
     })
     .then((data) => {
       console.log(data);
-      for(i = 0; i< data.length; i++){
+      console.log(data.length);
+      for (i = 0; i < data.length; i++) {
         console.log(data[i].county);
+        countyMap.set(data[i].county, data[i].fips);
       }
+      console.log(countyMap.entries());
     });
 
   searchButton.addEventListener("click", (event) => {
