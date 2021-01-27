@@ -19,11 +19,12 @@ window.addEventListener("load", () => {
   let icuRemainingEl = document.querySelector(".icu-remaining");
   let searchInput = document.querySelector(".search-input");
   let searchButton = document.querySelector(".search-button");
-  let countyMap = new Map();
+  let counties = new Array();
+  let fips;
   //variables for API request
   const apiKey = "1e93c10c57714916ac56744d86a5e208";
-  const api = `https://api.covidactnow.org/v2/county/06097.json?apiKey=${apiKey}`;
-  const testApi = `https://api.covidactnow.org/v2/counties.json?apiKey=${apiKey}`;
+  let api = `https://api.covidactnow.org/v2/county/${fips}.json?apiKey=${apiKey}`;
+  const allCountiesAPI = `https://api.covidactnow.org/v2/counties.json?apiKey=${apiKey}`;
   //function to round values to a desired precision
   let round = (value, precision) => {
     var multiplier = Math.pow(10, precision || 0);
@@ -43,73 +44,110 @@ window.addEventListener("load", () => {
       formattedDate.getFullYear()
     );
   };
-  //API request
-  let updateData = () =>{
-
-  }
-  fetch(api)
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
-      //variables to pull out data from API response
-      let { county, state, country, population, lastUpdatedDate } = data;
-      let { cases, deaths, newCases } = data.actuals;
-      let {
-        capacity,
-        currentUsageCovid,
-        currentUsageTotal,
-      } = data.actuals.hospitalBeds;
-      let icuCapacity = data.actuals.icuBeds.capacity;
-      let icuUsageCovid = data.actuals.icuBeds.currentUsageCovid;
-      let icuUsageTotal = data.actuals.icuBeds.currentUsageTotal;
-      let { infectionRate, caseDensity } = data.metrics;
-      let location = county + ", " + state + ", " + country;
-      //inject extracted data into markup
-      dateUpdatedEl.innerHTML = "Date Update: " + formatDate(lastUpdatedDate);
-      locationEl.innerHTML = location;
-      populationEl.innerHTML = "Population: " + population.toLocaleString();
-      totalCasesEl.innerHTML = "Total Cases: " + cases.toLocaleString();
-      totalDeathsEl.innerHTML = "Total Deaths: " + deaths.toLocaleString();
-      newCasesEl.innerHTML = "New Cases: " + newCases.toLocaleString();
-      infectionRateEl.innerHTML = "Infection Rate: " + round(infectionRate, 2);
-      caseDensityEl.innerHTML = "Case Density: " + round(caseDensity, 2);
-      hospitalCapacityEl.innerHTML =
-        "Total Hospital Beds: " + capacity.toLocaleString();
-      hospitalCovidUsageEl.innerHTML =
-        "Hospital Beds in Use (Covid-19): " +
-        currentUsageCovid.toLocaleString();
-      hospitalTotalUsageEl.innerHTML =
-        "Hospital Beds in Use (Total): " + currentUsageTotal.toLocaleString();
-      hospitalRemainingEl.innerHTML =
-        "Hospital Beds Remaining: " + (capacity - currentUsageTotal);
-      icuCapacityEl.innerHTML =
-        "Total ICU Beds: " + icuCapacity.toLocaleString();
-      icuCovidUsageEl.innerHTML =
-        "ICU Beds in Use (Covid-19): " + icuUsageCovid.toLocaleString();
-      icuTotalUsageEl.innerHTML =
-        "ICU Beds in Use (Total): " + icuUsageTotal.toLocaleString();
-      icuRemainingEl.innerHTML =
-        "ICU Beds Remaining: " + (icuCapacity - icuUsageTotal);
+  if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition((position) => {
+      let lat = position.coords.latitude;
+      let lon = position.coords.longitude;
+      let fipsAPI = `https://geo.fcc.gov/api/census/area?lat=${lat}&lon=${lon}&format=json`;
+      fetch(fipsAPI)
+        .then((data) => {
+          return data.json();
+        })
+        .then((data) => {
+          console.log(data);
+          fips = data.results[0].county_fips;
+          api = `https://api.covidactnow.org/v2/county/${fips}.json?apiKey=${apiKey}`;
+          getData();
+        });
     });
-  fetch(testApi)
-    .then((response) => {
-      return response.json();
+  } else {
+    /* geolocation IS NOT available */
+  }
+  //API request
+  let getData = () => {
+    fetch(api)
+      .then((data) => {
+        return data.json();
+      })
+      .then((data) => {
+        console.log(data);
+        //variables to pull out data from API response
+        let { county, state, country, population, lastUpdatedDate } = data;
+        let { cases, deaths, newCases } = data.actuals;
+        let {
+          capacity,
+          currentUsageCovid,
+          currentUsageTotal,
+        } = data.actuals.hospitalBeds;
+        let icuCapacity = data.actuals.icuBeds.capacity;
+        let icuUsageCovid = data.actuals.icuBeds.currentUsageCovid;
+        let icuUsageTotal = data.actuals.icuBeds.currentUsageTotal;
+        let { infectionRate, caseDensity } = data.metrics;
+        let location = county + ", " + state + ", " + country;
+        //inject extracted data into markup
+        let updateData = () => {
+          dateUpdatedEl.innerHTML =
+            "Date Update: " + formatDate(lastUpdatedDate);
+          locationEl.innerHTML = location;
+          populationEl.innerHTML = "Population: " + population.toLocaleString();
+          totalCasesEl.innerHTML = "Total Cases: " + cases.toLocaleString();
+          totalDeathsEl.innerHTML = "Total Deaths: " + deaths.toLocaleString();
+          newCasesEl.innerHTML = "New Cases: " + newCases.toLocaleString();
+          infectionRateEl.innerHTML =
+            "Infection Rate: " + round(infectionRate, 2);
+          caseDensityEl.innerHTML = "Case Density: " + round(caseDensity, 2);
+          hospitalCapacityEl.innerHTML =
+            "Total Hospital Beds: " + capacity.toLocaleString();
+          hospitalCovidUsageEl.innerHTML =
+            "Hospital Beds in Use (COVID-19): " +
+            currentUsageCovid.toLocaleString();
+          hospitalTotalUsageEl.innerHTML =
+            "Hospital Beds in Use (Total): " +
+            currentUsageTotal.toLocaleString();
+          hospitalRemainingEl.innerHTML =
+            "Hospital Beds Remaining: " + (capacity - currentUsageTotal);
+          icuCapacityEl.innerHTML =
+            "Total ICU Beds: " + icuCapacity.toLocaleString();
+          icuCovidUsageEl.innerHTML =
+            "ICU Beds in Use (COVID-19): " + icuUsageCovid.toLocaleString();
+          icuTotalUsageEl.innerHTML =
+            "ICU Beds in Use (Total): " + icuUsageTotal.toLocaleString();
+          icuRemainingEl.innerHTML =
+            "ICU Beds Remaining: " + (icuCapacity - icuUsageTotal);
+        };
+        updateData();
+      });
+  };
+
+  fetch(allCountiesAPI)
+    .then((data) => {
+      return data.json();
     })
     .then((data) => {
       console.log(data);
-      console.log(data.length);
-      for (i = 0; i < data.length; i++) {
-        console.log(data[i].county);
-        countyMap.set(data[i].county, data[i].fips);
+      counties.length = data.length;
+      for (i = 0; i < counties.length; i++) {
+        counties[i] = {
+          county: data[i].county,
+          state: data[i].state,
+          fips: data[i].fips,
+        };
       }
-      console.log(countyMap.entries());
     });
 
   searchButton.addEventListener("click", (event) => {
     event.preventDefault();
-    console.log(searchInput.value);
+    counties.forEach((data) => {
+      if (
+        searchInput.value == data.county ||
+        searchInput.value + " County" == data.county
+      ) {
+        fips = data.fips;
+      }
+    });
+    api = `https://api.covidactnow.org/v2/county/${fips}.json?apiKey=${apiKey}`;
     searchInput.value = "";
+    getData();
+    console.log(fips);
   });
 });
