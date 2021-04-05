@@ -24,14 +24,14 @@ window.addEventListener("load", () => {
   //variables for API request
   const apiKey = "1e93c10c57714916ac56744d86a5e208";
   let api = `https://api.covidactnow.org/v2/county/${fips}.json?apiKey=${apiKey}`;
-  const allCountiesAPI = `https://api.covidactnow.org/v2/counties.json?apiKey=${apiKey}`;
-  //function to round values to a desired precision
-  let round = (value, precision) => {
+  let allCountiesAPI = `https://api.covidactnow.org/v2/counties.json?apiKey=${apiKey}`;
+  //helper function to round values to a desired precision
+  const round = (value, precision) => {
     var multiplier = Math.pow(10, precision || 0);
     return Math.round(value * multiplier) / multiplier;
   };
-  //function to format date
-  let formatDate = (date) => {
+  //helper function to format date
+  const formatDate = (date) => {
     let dateString = date;
     let formattedDate = new Date(dateString);
     formattedDate.setDate(formattedDate.getDate() + 1);
@@ -44,6 +44,7 @@ window.addEventListener("load", () => {
       formattedDate.getFullYear()
     );
   };
+  //logic to grab current location and set display data
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition((position) => {
       let lat = position.coords.latitude;
@@ -54,23 +55,19 @@ window.addEventListener("load", () => {
           return data.json();
         })
         .then((data) => {
-          console.log(data);
           fips = data.results[0].county_fips;
-          api = `https://api.covidactnow.org/v2/county/${fips}.json?apiKey=${apiKey}`;
           getData();
         });
     });
-  } else {
-    /* geolocation IS NOT available */
   }
   //API request
   let getData = () => {
+    api = `https://api.covidactnow.org/v2/county/${fips}.json?apiKey=${apiKey}`;
     fetch(api)
       .then((data) => {
         return data.json();
       })
       .then((data) => {
-        console.log(data);
         //variables to pull out data from API response
         let { county, state, country, population, lastUpdatedDate } = data;
         let { cases, deaths, newCases } = data.actuals;
@@ -124,7 +121,6 @@ window.addEventListener("load", () => {
       return data.json();
     })
     .then((data) => {
-      console.log(data);
       counties.length = data.length;
       for (i = 0; i < counties.length; i++) {
         counties[i] = {
@@ -137,6 +133,8 @@ window.addEventListener("load", () => {
 
   searchButton.addEventListener("click", (event) => {
     event.preventDefault();
+    searchInput.value =
+      searchInput.value.charAt(0).toUpperCase() + searchInput.value.slice(1);
     counties.forEach((data) => {
       if (
         searchInput.value == data.county ||
@@ -148,6 +146,5 @@ window.addEventListener("load", () => {
     api = `https://api.covidactnow.org/v2/county/${fips}.json?apiKey=${apiKey}`;
     searchInput.value = "";
     getData();
-    console.log(fips);
   });
 });
